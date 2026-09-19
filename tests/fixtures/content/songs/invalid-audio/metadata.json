@@ -1,0 +1,9 @@
+{
+  "id": "broken-song",
+  "title": "Broken Song",
+  "artist": "Test Artist",
+  "duration_ms": 1000,
+  "bpm_display": "100",
+  "audio": "../outside.ogg",
+  "difficulties": ["easy"]
+}

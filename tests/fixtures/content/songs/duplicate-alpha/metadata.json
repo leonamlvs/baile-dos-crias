@@ -1,0 +1,9 @@
+{
+  "id": "alpha-song",
+  "title": "Duplicate Alpha",
+  "artist": "Test Artist",
+  "duration_ms": 1000,
+  "bpm_display": "100",
+  "audio": "audio.fixture",
+  "difficulties": ["easy"]
+}

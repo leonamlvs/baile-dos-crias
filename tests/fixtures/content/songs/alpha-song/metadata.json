@@ -1,0 +1,9 @@
+{
+  "id": "alpha-song",
+  "title": "Alpha Song",
+  "artist": "Test Artist",
+  "duration_ms": 60000,
+  "bpm_display": "150",
+  "audio": "audio.fixture",
+  "difficulties": ["easy", "normal"]
+}
