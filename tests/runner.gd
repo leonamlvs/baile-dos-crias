@@ -7,15 +7,10 @@ const EXPECTED_SCENES: Array[String] = [
 	"res://scenes/gameplay/gameplay.tscn",
 	"res://scenes/results/results.tscn",
 ]
-const PLACEHOLDER_SCENES: Array[String] = [
-	"res://scenes/start/start.tscn",
-	"res://scenes/character_select/character_select.tscn",
-	"res://scenes/song_select/song_select.tscn",
-	"res://scenes/results/results.tscn",
-]
 const M1TestSuite = preload("res://tests/m1_test_suite.gd")
 const M2TestSuite = preload("res://tests/m2_test_suite.gd")
 const M3TestSuite = preload("res://tests/m3_test_suite.gd")
+const M4TestSuite = preload("res://tests/m4_test_suite.gd")
 
 var _failures := 0
 var _checks := 0
@@ -26,20 +21,21 @@ func _init() -> void:
 
 
 func _run() -> void:
-	print("M0/M1/M2/M3 validation started")
+	print("M0/M1/M2/M3/M4 validation started")
 	_check_project_settings()
 	_check_scenes()
 	_check_web_preset()
 	M1TestSuite.new().run(self)
 	M2TestSuite.new().run(self)
 	M3TestSuite.new().run(self)
+	M4TestSuite.new().run(self)
 
 	if _failures == 0:
-		print("M0/M1/M2/M3 validation passed: %d checks" % _checks)
+		print("M0/M1/M2/M3/M4 validation passed: %d checks" % _checks)
 		quit(0)
 		return
 
-	printerr("M0/M1/M2/M3 validation failed: %d of %d checks failed" % [_failures, _checks])
+	printerr("M0/M1/M2/M3/M4 validation failed: %d of %d checks failed" % [_failures, _checks])
 	quit(1)
 
 
@@ -99,11 +95,8 @@ func _check_scenes() -> void:
 			continue
 
 		_expect(instance is Control, "%s root is Control" % scene_path)
-		if scene_path in PLACEHOLDER_SCENES:
-			_expect(instance.get_script() == null, "%s remains behavior-free" % scene_path)
-			_expect(instance.get_child_count() == 0, "%s remains a placeholder" % scene_path)
-		else:
-			_expect(instance.get_script() != null, "%s has M3 gameplay coordinator" % scene_path)
+		_expect(instance.get_script() != null, "%s has a screen coordinator" % scene_path)
+		if scene_path == "res://scenes/gameplay/gameplay.tscn":
 			_expect(instance.get_node_or_null("PadGrid") != null, "%s contains M3 PadGrid" % scene_path)
 		instance.free()
 

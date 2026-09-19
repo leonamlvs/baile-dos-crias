@@ -11,3 +11,7 @@ content, save, and logical-input suites. M2 adds authoritative clock, chart-v1
 validation, and timeline traversal suites. M3 covers gameplay judgment boundaries,
 note/Hold lifecycle, score/combo/multiplier, MISS streak, accuracy/rank,
 success/failure, visual timing math, and clean session reset.
+
+M4 adds deterministic navigation-boundary, runtime-selection, and product-flow
+selection tests. Screen composition and browser/mobile ergonomics remain manual
+validation work.

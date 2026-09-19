@@ -4,34 +4,24 @@ Updated: **2026-09-19**
 
 ## State
 
-M0 through M3 are implemented and locally validated:
+M0 through M4 are implemented and locally validated:
 
 - Godot 4.7.2 project with Compatibility renderer;
 - 720×1280 portrait logical viewport with uniform non-cropping scaling;
 - Web export preset;
-- planned folder structure and placeholder product screens;
 - native headless GDScript validation runner;
 - matching local Web export templates and verified local release export;
-- data-driven content catalog with diagnostics that exclude invalid items while
-  retaining valid contributions;
-- save-v1 local persistence, export/import confirmation boundary, corrupt-save
-  quarantine, and unsupported-version preservation;
-- runtime-only cosmetic `GameState` selection;
-- nine-pad logical input aggregation with keyboard, mouse, touch, multitouch,
-  touch binding, and focus clearing;
-- `AudioManager` gameplay ownership and compensated monotonic song clock;
-- strict runtime chart-v1 parsing and validation;
-- absolute-time `ChartPlayer` traversal with chord ordering, render-stall
-  catch-up, pause stability, and clean retry;
-- scene-local 3×3 gameplay pad grid with keyboard, pointer, and multitouch routing;
-- song-time-derived Tap expansion and Hold progress presentation;
-- deterministic Tap/Hold/chord lifecycle with pre-hold, release/resume, explicit
-  Hold ticks, and exact-window expiry;
-- judgment, score, positive combo/multiplier, MISS streak, accuracy, rank, and
-  success/failure gameplay services;
-- clean gameplay retry/reset across notes, score, timers, and physical/logical
-  held input state;
-- 288 deterministic M0/M1/M2/M3 native headless checks.
+- data-driven content catalog with diagnostics that exclude invalid items while retaining valid contributions;
+- save-v1 local persistence, export/import confirmation boundary, corrupt-save quarantine, and unsupported-version preservation;
+- runtime-only cosmetic and product-flow `GameState` selection;
+- nine-pad logical input aggregation with keyboard, mouse, touch, multitouch, touch binding, and focus clearing;
+- `AudioManager` gameplay ownership, compensated monotonic song clock, and 15-second preview playback with 250 ms fades;
+- strict runtime chart-v1 parsing and absolute-time `ChartPlayer` traversal;
+- deterministic M3 note lifecycle, scoring, rank, success/failure, and clean retry;
+- `ScreenRouter` AutoLoad limited to scene navigation/transitions;
+- Start, Character/Table Select, Song/Difficulty Select, Gameplay Pause, and Results product screens;
+- responsive placeholder composition, keyboard selection, playback countdown, focus-loss pause, high-score storage, and pulsing text `NEW RECORD` feedback;
+- 311 deterministic M0/M1/M2/M3/M4 native headless checks.
 
 Locked core decisions:
 
@@ -57,24 +47,19 @@ Locked core decisions:
 - Song previews loop for 15 seconds with 250 ms fades.
 - Start music stops on exit; Character Select is silent.
 - Proportional selection layouts, centered Pause modal, and pulsing `NEW RECORD` text.
-- Save-v1 persists only master volume and high scores; cosmetic selection and
-  session statistics are not persisted.
+- Save-v1 persists only master volume and high scores; cosmetic selection and session statistics are not persisted.
 - Invalid content is diagnosed and excluded without blocking valid content.
 
 ## Next milestone
 
-M4 — product screens:
+M5 — chart authoring tool:
 
-- Start and navigation flow;
-- character/table and song/difficulty selection;
-- Pause and Results screens;
-- screen/state/audio wiring around the completed gameplay core.
+- deterministic Python MIDI-file-to-JSON CLI;
+- configurable nine-pad MIDI mapping and tempo-map conversion;
+- Tap/Hold conversion, explicit valid Hold ticks, and JSON validation.
 
-Later content blockers remain: final MIDI mapping presets, real-device tuning of
-the `0.5 beat` authoring threshold, and redistribution rights or replacement for
-the public gameplay song.
+Later content blockers remain: final MIDI mapping presets, real-device tuning of the `0.5 beat` authoring threshold, and redistribution rights or replacement for the public gameplay song.
 
 ## Rule
 
-M3 is complete. Do not begin M4 without an explicit request. CI setup and CI Web
-export validation remain M6 scope.
+M4 is complete. Do not begin M5 without an explicit request. CI setup and CI Web export validation remain M6 scope.
