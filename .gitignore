@@ -1,0 +1,19 @@
+# Godot-generated state
+.godot/
+
+# Local exports and logs
+build/
+logs/
+*.log
+
+# Python authoring-tool state
+__pycache__/
+*.py[cod]
+.venv/
+
+# Editor and OS-local files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
