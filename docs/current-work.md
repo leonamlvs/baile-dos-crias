@@ -4,14 +4,14 @@ Updated: **2026-09-19**
 
 ## State
 
-M0 and M1 are implemented and locally validated:
+M0 through M2 are implemented and locally validated:
 
 - Godot 4.7.2 project with Compatibility renderer;
 - 720×1280 portrait logical viewport with uniform non-cropping scaling;
 - Web export preset;
 - planned folder structure and five behavior-free placeholder scenes;
 - native headless GDScript validation runner;
-- matching local Web export templates and verified local release export.
+- matching local Web export templates and verified local release export;
 - data-driven content catalog with diagnostics that exclude invalid items while
   retaining valid contributions;
 - save-v1 local persistence, export/import confirmation boundary, corrupt-save
@@ -19,7 +19,11 @@ M0 and M1 are implemented and locally validated:
 - runtime-only cosmetic `GameState` selection;
 - nine-pad logical input aggregation with keyboard, mouse, touch, multitouch,
   touch binding, and focus clearing;
-- 91 deterministic M0/M1 native headless checks.
+- AudioManager gameplay ownership and compensated monotonic song clock;
+- strict runtime chart-v1 parsing and validation;
+- absolute-time ChartPlayer traversal with chord ordering, render-stall catch-up,
+  pause stability, and clean retry;
+- 142 deterministic M0/M1/M2 native headless checks.
 
 Locked core decisions:
 
@@ -51,12 +55,12 @@ Locked core decisions:
 
 ## Next milestone
 
-M2 — audio clock and chart runtime:
+M3 — gameplay core:
 
-- AudioManager gameplay ownership and compensated authoritative song clock;
-- runtime chart JSON parser/validator;
-- ChartPlayer against absolute millisecond timestamps;
-- deterministic play/pause/resume/retry synchronization tests.
+- 3×3 gameplay pad grid and note presentation;
+- Tap, Hold, chord, and overlapping-note lifecycle;
+- judgments, score, accuracy, combo/multiplier, and MISS streak;
+- song-end success and 50-consecutive-MISS failure.
 
 Later content blockers remain: final MIDI mapping presets, real-device tuning of
 the `0.5 beat` authoring threshold, and redistribution rights or replacement for
@@ -64,5 +68,5 @@ the public gameplay song.
 
 ## Rule
 
-M1 is complete. Do not begin M2 without an explicit request. CI setup and CI Web
+M2 is complete. Do not begin M3 without an explicit request. CI setup and CI Web
 export validation remain M6 scope.

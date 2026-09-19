@@ -65,6 +65,19 @@ Hold only:
 - The chart format does not require constant BPM.
 - Runtime does not recalculate MIDI tempo.
 - Visual approach duration/spawn lead time is presentation configuration, not part of judgment timing unless later required.
+- Tap notes must not contain Hold-only `end_ms` or `ticks_ms` fields.
+
+## Runtime traversal
+
+The M2 `ChartPlayer` expands a validated chart into ordered absolute-time events:
+
+- `note` at each Tap or Hold `time_ms`;
+- `hold_tick` at every explicit tick;
+- `hold_end` at each Hold `end_ms`.
+
+Events with the same timestamp retain their source order. Advancing across a
+render stall emits every crossed event exactly once. Time cannot move backwards;
+retry requires an explicit reset of both chart traversal and the song clock.
 
 ## Validation
 

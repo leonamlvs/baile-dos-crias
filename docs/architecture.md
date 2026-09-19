@@ -82,6 +82,11 @@ Responsibilities:
 
 Runtime chart JSON is parsed/validated before gameplay begins.
 
+`RuntimeChartParser` returns normalized chart dictionaries or actionable errors.
+It validates schema version, content IDs, note ordering, field types, Tap/Hold
+shape, unique note IDs, pad range, and strict Hold tick bounds before a
+`ChartPlayer` accepts the chart.
+
 Content metadata is loaded independently from audio and chart data.
 
 Save data is versioned and independent from runtime scene files.

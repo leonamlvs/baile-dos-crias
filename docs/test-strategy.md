@@ -28,6 +28,11 @@ quarantine behavior, explicit import confirmation, high-score replacement, and
 nine-pad source aggregation. Persistence logic uses an in-memory store fake for
 deterministic tests; the production store remains `user://`-backed.
 
+M2 uses an injected fake playback source to test mix/latency compensation,
+monotonic timing, pause/resume, completion, and clean retry. Chart tests cover
+every validation boundary plus chord ordering, render-stall catch-up, backward
+time rejection, and synchronized clock/chart reset.
+
 ## Headless validation
 
 The MVP uses a small native GDScript test runner that extends `SceneTree` and runs

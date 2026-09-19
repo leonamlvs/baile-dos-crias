@@ -12,6 +12,15 @@ Note spawn/progress, hit judgment, Hold progress, Hold ticks, chart progression,
 
 Use Godot playback position with audio-mix/output-latency compensation appropriate for the locked engine version.
 
+The M2 clock samples:
+
+`playback_position + time_since_last_mix - output_latency`
+
+It converts the result to absolute milliseconds, clamps it to zero, and never
+reports a value lower than its previous playing sample. The clock is implemented
+over an injectable playback source so pause/resume/retry behavior can be tested
+without real audio output.
+
 The exposed gameplay clock MUST:
 
 - Be monotonic while playing.
@@ -21,6 +30,10 @@ The exposed gameplay clock MUST:
 - Match chart timestamps expressed in absolute milliseconds.
 
 Visual animation reads this clock; visual animation never defines timing.
+
+`AudioManager` owns the gameplay `AudioStreamPlayer` and exposes start, pause,
+resume, retry, stop, current song time, and completion state. Retry resets the
+clock and begins the loaded stream from zero.
 
 ## Countdown
 

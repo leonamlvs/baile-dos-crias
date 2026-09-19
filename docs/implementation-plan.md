@@ -32,12 +32,13 @@ Exit: deterministic M0/M1 input, save, and content tests pass headlessly.
 
 ## M2 — Audio clock + chart runtime
 
-- AudioManager gameplay ownership.
-- Authoritative song clock.
-- JSON chart parser/validator.
-- ChartPlayer.
+- AudioManager gameplay ownership through one dedicated player.
+- Monotonic authoritative song clock compensated for audio mix/output latency.
+- Strict JSON chart-v1 parser/validator with content-ID cross-check inputs.
+- Absolute-time ChartPlayer events with stall catch-up and explicit reset.
 
-Exit: timestamp events remain synchronized through play/pause/resume/retry.
+Exit: deterministic timestamp events remain synchronized through playback
+sampling, render stalls, pause/resume, completion, and clean retry.
 
 ## M3 — Gameplay core
 
