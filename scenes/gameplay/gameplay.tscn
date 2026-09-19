@@ -1,4 +1,7 @@
-[gd_scene format=3]
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/gameplay/pad_grid.gd" id="1_pad_grid"]
+[ext_resource type="Script" path="res://scripts/gameplay/gameplay.gd" id="2_gameplay"]
 
 [node name="Gameplay" type="Control"]
 layout_mode = 3
@@ -7,4 +10,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_gameplay")
 
+[node name="PadGrid" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.1
+anchor_top = 0.55
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pad_grid")

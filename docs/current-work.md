@@ -4,12 +4,12 @@ Updated: **2026-09-19**
 
 ## State
 
-M0 through M2 are implemented and locally validated:
+M0 through M3 are implemented and locally validated:
 
 - Godot 4.7.2 project with Compatibility renderer;
 - 720×1280 portrait logical viewport with uniform non-cropping scaling;
 - Web export preset;
-- planned folder structure and five behavior-free placeholder scenes;
+- planned folder structure and placeholder product screens;
 - native headless GDScript validation runner;
 - matching local Web export templates and verified local release export;
 - data-driven content catalog with diagnostics that exclude invalid items while
@@ -19,11 +19,19 @@ M0 through M2 are implemented and locally validated:
 - runtime-only cosmetic `GameState` selection;
 - nine-pad logical input aggregation with keyboard, mouse, touch, multitouch,
   touch binding, and focus clearing;
-- AudioManager gameplay ownership and compensated monotonic song clock;
+- `AudioManager` gameplay ownership and compensated monotonic song clock;
 - strict runtime chart-v1 parsing and validation;
-- absolute-time ChartPlayer traversal with chord ordering, render-stall catch-up,
-  pause stability, and clean retry;
-- 142 deterministic M0/M1/M2 native headless checks.
+- absolute-time `ChartPlayer` traversal with chord ordering, render-stall
+  catch-up, pause stability, and clean retry;
+- scene-local 3×3 gameplay pad grid with keyboard, pointer, and multitouch routing;
+- song-time-derived Tap expansion and Hold progress presentation;
+- deterministic Tap/Hold/chord lifecycle with pre-hold, release/resume, explicit
+  Hold ticks, and exact-window expiry;
+- judgment, score, positive combo/multiplier, MISS streak, accuracy, rank, and
+  success/failure gameplay services;
+- clean gameplay retry/reset across notes, score, timers, and physical/logical
+  held input state;
+- 288 deterministic M0/M1/M2/M3 native headless checks.
 
 Locked core decisions:
 
@@ -55,12 +63,12 @@ Locked core decisions:
 
 ## Next milestone
 
-M3 — gameplay core:
+M4 — product screens:
 
-- 3×3 gameplay pad grid and note presentation;
-- Tap, Hold, chord, and overlapping-note lifecycle;
-- judgments, score, accuracy, combo/multiplier, and MISS streak;
-- song-end success and 50-consecutive-MISS failure.
+- Start and navigation flow;
+- character/table and song/difficulty selection;
+- Pause and Results screens;
+- screen/state/audio wiring around the completed gameplay core.
 
 Later content blockers remain: final MIDI mapping presets, real-device tuning of
 the `0.5 beat` authoring threshold, and redistribution rights or replacement for
@@ -68,5 +76,5 @@ the public gameplay song.
 
 ## Rule
 
-M2 is complete. Do not begin M3 without an explicit request. CI setup and CI Web
+M3 is complete. Do not begin M4 without an explicit request. CI setup and CI Web
 export validation remain M6 scope.
