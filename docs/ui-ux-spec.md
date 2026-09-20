@@ -36,6 +36,12 @@ Behavior:
 - Woofer pulse and soundwave are beat-driven.
 - Mouse/touch starts on release, not initial press.
 - `Space`/`Enter` starts immediately.
+- A small secondary `Data` control sits outside the primary `VAI` focal area.
+- `Data` opens a centered placeholder modal with `Export Data`, `Import Data`,
+  and `Close`.
+- A validated import changes the modal to an explicit `Replace` / `Cancel`
+  confirmation state. Invalid or unsupported data shows an actionable error and
+  never reaches confirmation.
 
 ## Character + table select
 
@@ -122,6 +128,8 @@ the MVP baseline.
 - Dragging over another pad never transfers the press.
 - Browser/app focus loss auto-pauses.
 - Returning to the game requires explicit resume and countdown.
+- A landscape mobile viewport blocks interaction with a rotate-device overlay.
+  Returning to portrait does not resume gameplay automatically.
 
 ## Still TBD
 

@@ -65,11 +65,19 @@ godot --headless --path . --editor --quit
 godot --headless --path . --script res://tests/runner.gd
 python -m unittest discover -s tools/chart_import/tests -v
 godot --headless --path . --export-release Web build/web/index.html
+python scripts/verify_web_export.py build/web
+godot --headless --path . --script res://scripts/validate_release_content.gd
 ```
 
 These commands verify the pinned tools, import and parse the project, run the
-integrated M0–M5 suite, optionally run the Python importer suite directly, and
-create the local Web release build. CI automation remains M6 scope.
+integrated M0–M6 suite, optionally run the Python importer suite directly,
+create and verify the local Web release build, and enforce the MVP release
+content gate. The release-content command intentionally exits nonzero while no
+cleared playable song, character, and DJ table are present.
+
+GitHub Actions repeats project import, native and Python tests, strict release
+content validation, Web export, artifact verification, and artifact upload with
+Godot `4.7.2.stable` and matching export templates.
 
 Restricted environments may report inability to write Godot's editor cache,
 `user://` logs, or the Windows certificate store. Treat these as environment

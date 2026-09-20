@@ -1,6 +1,8 @@
 class_name CatalogSelection
 extends RefCounted
 
+const SWIPE_THRESHOLD := 48.0
+
 var items: Array[Dictionary] = []
 var index := 0
 
@@ -34,6 +36,12 @@ func current_id() -> String:
 
 func has_items() -> bool:
 	return not items.is_empty()
+
+
+static func swipe_direction(delta_x: float, threshold: float = SWIPE_THRESHOLD) -> int:
+	if absf(delta_x) < threshold:
+		return 0
+	return -1 if delta_x > 0.0 else 1
 
 
 class SongSelection:

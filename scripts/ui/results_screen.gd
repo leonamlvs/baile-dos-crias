@@ -7,7 +7,10 @@ var _new_record_label: Label
 
 
 func _ready() -> void:
+	AudioManager.stop_start_music()
+	AudioManager.stop_preview()
 	_build()
+	UiHelpersScript.attach_viewport_guard(self)
 
 
 func _process(_delta: float) -> void:

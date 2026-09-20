@@ -13,14 +13,16 @@ var _character_label: Label
 var _table_label: Label
 var _focus_label: Label
 var _next_button: Button
-
+var _swipe_starts := {}
 
 func _ready() -> void:
+	AudioManager.stop_start_music()
 	AudioManager.stop_preview()
 	var catalog = ContentCatalogScript.new()
 	catalog.load_from_root()
 	configure(catalog.characters, catalog.tables)
 	_build()
+	UiHelpersScript.attach_viewport_guard(self)
 	_refresh()
 
 
@@ -99,6 +101,8 @@ func _build() -> void:
 	_table_label = UiHelpersScript.label("", 28)
 	UiHelpersScript.anchor(_table_label, 0.12, 0.68, 0.88, 0.77)
 	add_child(_table_label)
+	_add_swipe_area(0, 0.15, 0.55, 0.85, 0.64)
+	_add_swipe_area(1, 0.15, 0.68, 0.85, 0.77)
 
 	var previous_character := UiHelpersScript.button("‹")
 	UiHelpersScript.anchor(previous_character, 0.05, 0.55, 0.15, 0.64)
@@ -134,3 +138,43 @@ func _continue() -> void:
 
 func _display_name(item: Dictionary, fallback: String) -> String:
 	return String(item.get("name", fallback))
+
+
+func _add_swipe_area(track: int, left: float, top: float, right: float, bottom: float) -> void:
+	var area := Control.new()
+	area.name = "CharacterSwipeArea" if track == 0 else "TableSwipeArea"
+	area.mouse_filter = Control.MOUSE_FILTER_STOP
+	UiHelpersScript.anchor(area, left, top, right, bottom)
+	area.gui_input.connect(func(event: InputEvent) -> void: _on_swipe_input(event, track, area))
+	add_child(area)
+
+
+func _on_swipe_input(event: InputEvent, track: int, area: Control) -> void:
+	var source := ""
+	var position := Vector2.ZERO
+	var pressed := false
+	if event is InputEventScreenTouch:
+		source = "touch:%d" % event.index
+		position = event.position
+		pressed = event.pressed
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		source = "mouse"
+		position = event.position
+		pressed = event.pressed
+	else:
+		return
+	if pressed:
+		_swipe_starts[source] = {"position": position, "track": track}
+		area.accept_event()
+		return
+	if not _swipe_starts.has(source):
+		return
+	var start: Dictionary = _swipe_starts[source]
+	_swipe_starts.erase(source)
+	if int(start.track) != track:
+		return
+	var direction := CatalogSelectionScript.swipe_direction(position.x - Vector2(start.position).x)
+	if direction != 0:
+		set_focus_track(track)
+		move_focused(direction)
+	area.accept_event()

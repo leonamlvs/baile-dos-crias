@@ -19,3 +19,10 @@ validation work.
 M5 invokes the standard-library Python importer suite from the native runner,
 covering MIDI parsing, tempo maps, mapping configuration, Tap/Hold conversion,
 strict Hold ticks, validation, and byte-identical output repeatability.
+
+M6 covers audio envelopes/ownership boundaries, responsive orientation policy,
+mobile-safe controls, selection swipe/title behavior, screen guards, the Start
+Data modal and confirmed-import boundary, countdown interruption safety, and
+release/CI configuration. Strict shippable-content validation remains a
+separate command because it is expected to fail loudly while release content is
+missing.

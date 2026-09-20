@@ -38,6 +38,13 @@ headless runner. It covers format-0/1 MIDI parsing, running status, variable
 tempo maps, configurable pad mapping, Tap/Hold thresholds, strict interior Hold
 ticks, malformed/pairing errors, runtime validation, and byte-identical output.
 
+M6 adds deterministic coverage for Start beat phase, the 15-second preview
+envelope, landscape-mobile blocking, shared touch-target minimums, selection
+swipes, title overflow motion, responsive guard presence, the Start Data modal,
+invalid/unsupported import rejection, explicit Replace/Cancel behavior,
+countdown input blocking, interrupted countdown restart, CI configuration, and
+release audio inclusion/exclusion rules.
+
 ## Headless validation
 
 The MVP uses a small native GDScript test runner that extends `SceneTree` and runs
@@ -53,7 +60,10 @@ Local validation should at least:
 - load critical scenes/resources;
 - run the native deterministic test suite.
 
-CI execution and CI Web export validation are M6 scope.
+M6 CI is defined in `.github/workflows/validate.yml`. A separate strict release
+content command rejects a package without at least one valid song, character,
+table, both MVP difficulties, and valid charts for every declared difficulty.
+This is intentionally distinct from deterministic fixture tests.
 
 ## Manual desktop tests
 

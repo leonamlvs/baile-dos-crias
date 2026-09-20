@@ -73,6 +73,11 @@ file. Export uses UTC and the filename `baile-dos-crias-save-v1.json`.
 
 Web export may use a small JavaScript bridge adapter to trigger browser download/file selection.
 
+The Start screen exposes these actions through a subordinate `Data` control.
+Its centered placeholder modal offers `Export Data`, `Import Data`, and `Close`.
+After file selection, only a valid candidate advances to a separate
+`Replace` / `Cancel` confirmation state.
+
 ## Import rules
 
 Before replacing local data:

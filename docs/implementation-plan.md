@@ -93,6 +93,12 @@ Exit: a performed MIDI chart can become a playable chart without manual note ent
 
 Exit: release candidate is functionally complete and satisfies acceptance criteria using approved audio and replaceable visual placeholders; final production artwork may be integrated later without architectural or gameplay changes.
 
+Current status: automated M6 integration, CI configuration, and a verified local
+Web export are implemented. The exit criterion is not yet met because the
+strict release gate has no cleared playable song/character/table content and
+browser, itch.io, and physical-device QA remain outstanding. See
+`current-work.md` for the exact blockers.
+
 ## Future
 
 - Direct audio chart generation.

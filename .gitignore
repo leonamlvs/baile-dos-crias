@@ -2,9 +2,13 @@
 .godot/
 
 # Local exports and logs
-build/
+build/*
+!build/.gdignore
 logs/
 *.log
+
+# Local-only reference without confirmed redistribution rights
+assets/ref/audio/DJ*
 
 # Python authoring-tool state
 __pycache__/
@@ -16,4 +20,3 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
-

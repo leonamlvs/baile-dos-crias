@@ -12,6 +12,7 @@ const M2TestSuite = preload("res://tests/m2_test_suite.gd")
 const M3TestSuite = preload("res://tests/m3_test_suite.gd")
 const M4TestSuite = preload("res://tests/m4_test_suite.gd")
 const M5TestSuite = preload("res://tests/m5_test_suite.gd")
+const M6TestSuite = preload("res://tests/m6_test_suite.gd")
 
 var _failures := 0
 var _checks := 0
@@ -22,7 +23,7 @@ func _init() -> void:
 
 
 func _run() -> void:
-	print("M0/M1/M2/M3/M4/M5 validation started")
+	print("M0/M1/M2/M3/M4/M5/M6 validation started")
 	_check_project_settings()
 	_check_scenes()
 	_check_web_preset()
@@ -31,13 +32,14 @@ func _run() -> void:
 	M3TestSuite.new().run(self)
 	M4TestSuite.new().run(self)
 	M5TestSuite.new().run(self)
+	M6TestSuite.new().run(self)
 
 	if _failures == 0:
-		print("M0/M1/M2/M3/M4/M5 validation passed: %d checks" % _checks)
+		print("M0/M1/M2/M3/M4/M5/M6 validation passed: %d checks" % _checks)
 		quit(0)
 		return
 
-	printerr("M0/M1/M2/M3/M4/M5 validation failed: %d of %d checks failed" % [_failures, _checks])
+	printerr("M0/M1/M2/M3/M4/M5/M6 validation failed: %d of %d checks failed" % [_failures, _checks])
 	quit(1)
 
 
@@ -116,10 +118,9 @@ func _check_web_preset() -> void:
 		preset_text.contains('export_path="build/web/index.html"'),
 		"Web preset has expected output path",
 	)
-	_expect(
-		preset_text.contains('exclude_filter="build/*,tests/*,assets/ref/*"'),
-		"Web preset excludes local builds, tests, and reference-only assets",
-	)
+	_expect(preset_text.contains("build/*") and preset_text.contains("tests/*"), "Web preset excludes local builds and tests")
+	_expect(preset_text.contains("tools/*") and preset_text.contains("docs/*"), "Web preset excludes development-only files")
+	_expect(preset_text.contains("assets/ref/img/*") and preset_text.contains("assets/ref/audio/DJ*"), "Web preset excludes reference art and unlicensed gameplay audio")
 
 
 func _expect(condition: bool, label: String) -> void:

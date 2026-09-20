@@ -51,6 +51,14 @@ The 3×3 gameplay view, simultaneous notes, Hold effects, character/table art, a
 
 No fixed FPS assumption may affect score/timing.
 
+## Continuous integration
+
+CI installs the official Godot `4.7.2.stable` editor and matching export
+templates, then runs headless project loading, the native GDScript suite, the
+Python chart-import suite, strict release-content/chart validation, and the Web
+release export/artifact verifier. A failing release gate remains a failing job;
+the export steps still run so their diagnostics and artifact can be inspected.
+
 ## Licensing
 
 Only content with confirmed redistribution rights may ship publicly.

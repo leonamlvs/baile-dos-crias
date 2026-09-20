@@ -18,6 +18,7 @@ var _completion_emitted := false
 var _countdown_active := false
 var _countdown_started_at_ms := 0
 var _countdown_mode := ""
+var _interrupted_countdown_mode := ""
 var _pending_chart := {}
 var _pending_stream: AudioStream
 var _finalized_result := false
@@ -25,6 +26,7 @@ var _score_label: Label
 var _countdown_label: Label
 var _pause_overlay: Control
 var _error_label: Label
+var _viewport_guard: ResponsiveViewportGuard
 
 @onready var pad_grid = $PadGrid
 
@@ -34,8 +36,17 @@ func _ready() -> void:
 	pad_grid.pad_released.connect(_on_pad_released)
 	session_completed.connect(_on_session_completed)
 	_build_product_ui()
+	_viewport_guard = UiHelpersScript.attach_viewport_guard(self)
+	_viewport_guard.blocking_changed.connect(_on_orientation_blocking_changed)
 	set_process(false)
 	call_deferred("_begin_selected_song")
+	if _viewport_guard.is_blocking():
+		call_deferred("_on_orientation_blocking_changed", true)
+
+
+func _exit_tree() -> void:
+	_clear_input_without_forwarding()
+	AudioManager.stop_gameplay()
 
 
 func begin_session(chart: Dictionary, time_source: Callable = Callable()) -> void:
@@ -133,13 +144,23 @@ func _current_input_time_ms() -> int:
 
 
 func _on_pad_pressed(pad: int) -> void:
-	if _forward_pad_signals:
+	if _can_accept_gameplay_input():
 		press_pad_at(pad, _current_input_time_ms())
 
 
 func _on_pad_released(pad: int) -> void:
-	if _forward_pad_signals:
+	if _can_accept_gameplay_input():
 		release_pad_at(pad, _current_input_time_ms())
+
+
+func _can_accept_gameplay_input() -> bool:
+	return (
+		_forward_pad_signals
+		and not _countdown_active
+		and is_instance_valid(_pause_overlay)
+		and not _pause_overlay.visible
+		and session.status == GameplaySessionScript.RUNNING
+	)
 
 
 func _clear_input_without_forwarding() -> void:
@@ -170,9 +191,7 @@ func _notify_terminal_status() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
-		_clear_input_without_forwarding()
-		if session.status == GameplaySessionScript.RUNNING and not _countdown_active:
-			pause_session()
+		_interrupt_for_pause()
 
 
 func _begin_selected_song() -> void:
@@ -213,11 +232,24 @@ func continue_session() -> void:
 	if not _pause_overlay.visible:
 		return
 	_pause_overlay.visible = false
+	if not _interrupted_countdown_mode.is_empty():
+		var mode := _interrupted_countdown_mode
+		_interrupted_countdown_mode = ""
+		if mode == "start":
+			_begin_countdown(_pending_chart, _pending_stream, mode)
+		else:
+			_begin_countdown({}, null, mode)
+		return
 	_begin_countdown({}, null, "resume")
 
 
 func retry_product_session() -> void:
 	_pause_overlay.visible = false
+	if _interrupted_countdown_mode == "start":
+		_interrupted_countdown_mode = ""
+		_begin_countdown(_pending_chart, _pending_stream, "start")
+		return
+	_interrupted_countdown_mode = ""
 	_begin_countdown({}, null, "retry")
 
 
@@ -228,6 +260,7 @@ func exit_to_song_select() -> void:
 
 
 func _begin_countdown(chart: Dictionary, stream: AudioStream, mode: String) -> void:
+	_clear_input_without_forwarding()
 	if mode == "start":
 		_pending_chart = chart.duplicate(true)
 		_pending_stream = stream
@@ -235,6 +268,7 @@ func _begin_countdown(chart: Dictionary, stream: AudioStream, mode: String) -> v
 		_show_error("A sessão não possui música válida para reiniciar.")
 		return
 	_countdown_mode = mode
+	_interrupted_countdown_mode = ""
 	_countdown_started_at_ms = Time.get_ticks_msec()
 	_countdown_active = true
 	_countdown_label.visible = true
@@ -249,6 +283,7 @@ func _update_countdown() -> void:
 		return
 	_countdown_active = false
 	_countdown_label.visible = false
+	_clear_input_without_forwarding()
 	match _countdown_mode:
 		"start":
 			var started: Dictionary = AudioManager.start_gameplay(_pending_stream)
@@ -271,6 +306,24 @@ func _update_countdown() -> void:
 			retry_session()
 			_time_source = Callable(AudioManager, "get_song_time_ms")
 			set_process(true)
+
+
+func _on_orientation_blocking_changed(blocking: bool) -> void:
+	if blocking:
+		_interrupt_for_pause()
+
+
+func _interrupt_for_pause() -> void:
+	_clear_input_without_forwarding()
+	if _countdown_active:
+		_interrupted_countdown_mode = _countdown_mode
+		_countdown_active = false
+		_countdown_label.visible = false
+		set_process(false)
+		_pause_overlay.visible = true
+		return
+	if session.status == GameplaySessionScript.RUNNING and not _pause_overlay.visible:
+		pause_session()
 
 
 func _on_session_completed(result: Dictionary) -> void:

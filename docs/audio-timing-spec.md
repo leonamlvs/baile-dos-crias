@@ -57,6 +57,10 @@ Nominal beat interval:
 
 Woofer pulse and soundwave events use a configurable beat offset so visual beats can be aligned to the actual track.
 
+The Start track loops only while Start is active. Beat visuals read its playback
+position and the declared BPM/offset; they do not free-run from frame delta or a
+separate wall-clock animation.
+
 Do not perform real-time beat detection for this screen.
 
 ## Gameplay music
