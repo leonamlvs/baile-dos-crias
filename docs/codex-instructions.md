@@ -43,6 +43,16 @@ Do not silently choose product behavior.
 - Song clock authoritative.
 - Runtime charts are JSON with absolute millisecond timing.
 
+## Visual assets
+
+Production artwork is not available to Codex.
+
+- Use only simple geometric placeholders at the intended proportions and positions.
+- Preserve intended dimensions, aspect ratios, anchors, z-order, interaction areas, and animation bounds.
+- Keep visual asset slots replaceable so final artwork can later be integrated without changing gameplay logic or screen structure.
+- Do not create, approximate, redraw, search for, or polish missing production artwork.
+- Integrate only visual assets already present and explicitly approved for use in the project.
+
 ## Implementation style
 
 - Prefer the simplest maintainable Godot-native solution.

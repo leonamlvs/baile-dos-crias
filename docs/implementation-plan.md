@@ -74,17 +74,24 @@ Exit: complete MVP flow works with placeholders.
 
 Exit: a performed MIDI chart can become a playable chart without manual note entry.
 
-## M6 — Art/audio integration + Web/mobile QA
+## M6 — Placeholder integration + Web/mobile QA
 
-- Replace placeholders with production assets.
-- Beat-driven Start effects.
-- Song preview.
-- Mobile layout/touch polish.
-- itch.io export.
-- CI headless validation and CI Web export.
-- Browser/mobile/manual QA.
+- Keep simple geometric placeholders for production artwork not available in the repository.
+  - Preserve intended dimensions, aspect ratios, anchors, positions, z-order, interaction areas, and animation bounds.
+  - Keep visual asset slots isolated and replaceable so final artwork can be integrated later without changing gameplay logic or screen structure.
+  - Do not generate, approximate, redraw, search for, or polish missing production artwork.
+- Integrate only approved assets already available to the project.
+- Integrate available approved audio where applicable.
+- Implement beat-driven Start effects using the configured Start music.
+- Implement song preview behavior defined in the specifications.
+- Polish responsive mobile layout, touch behavior, and orientation handling using placeholders.
+- Add background extension/letterboxing and landscape rotate-device behavior.
+- Optimize for Compatibility/Web where needed.
+- Produce and validate the itch.io Web export.
+- Add CI headless validation and CI Web export.
+- Perform browser/mobile/manual QA against the acceptance criteria.
 
-Exit: release candidate satisfies acceptance criteria.
+Exit: release candidate is functionally complete and satisfies acceptance criteria using approved audio and replaceable visual placeholders; final production artwork may be integrated later without architectural or gameplay changes.
 
 ## Future
 

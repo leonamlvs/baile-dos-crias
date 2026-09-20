@@ -15,3 +15,7 @@ success/failure, visual timing math, and clean session reset.
 M4 adds deterministic navigation-boundary, runtime-selection, and product-flow
 selection tests. Screen composition and browser/mobile ergonomics remain manual
 validation work.
+
+M5 invokes the standard-library Python importer suite from the native runner,
+covering MIDI parsing, tempo maps, mapping configuration, Tap/Hold conversion,
+strict Hold ticks, validation, and byte-identical output repeatability.

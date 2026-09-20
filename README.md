@@ -55,18 +55,21 @@ Legacy reference art may still show the old name **Baile dos Amigos** or outdate
 
 ## Local validation
 
-Requires Godot `4.7.2.stable` and its matching Web export templates.
+Requires Godot `4.7.2.stable`, its matching Web export templates, and Python
+3.10 or newer for the M5 authoring tool/tests.
 
 ```powershell
 godot --version
+python --version
 godot --headless --path . --editor --quit
 godot --headless --path . --script res://tests/runner.gd
+python -m unittest discover -s tools/chart_import/tests -v
 godot --headless --path . --export-release Web build/web/index.html
 ```
 
-The first command verifies the pinned engine, the second imports and parses the
-project, the third runs native M0 validation, and the fourth creates the local
-Web release build. CI automation remains M6 scope.
+These commands verify the pinned tools, import and parse the project, run the
+integrated M0–M5 suite, optionally run the Python importer suite directly, and
+create the local Web release build. CI automation remains M6 scope.
 
 Restricted environments may report inability to write Godot's editor cache,
 `user://` logs, or the Windows certificate store. Treat these as environment

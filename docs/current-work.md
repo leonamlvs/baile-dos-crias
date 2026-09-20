@@ -4,7 +4,7 @@ Updated: **2026-09-19**
 
 ## State
 
-M0 through M4 are implemented and locally validated:
+M0 through M5 are implemented and locally validated:
 
 - Godot 4.7.2 project with Compatibility renderer;
 - 720×1280 portrait logical viewport with uniform non-cropping scaling;
@@ -21,7 +21,8 @@ M0 through M4 are implemented and locally validated:
 - `ScreenRouter` AutoLoad limited to scene navigation/transitions;
 - Start, Character/Table Select, Song/Difficulty Select, Gameplay Pause, and Results product screens;
 - responsive placeholder composition, keyboard selection, playback countdown, focus-loss pause, high-score storage, and pulsing text `NEW RECORD` feedback;
-- 311 deterministic M0/M1/M2/M3/M4 native headless checks.
+- dependency-free Python Standard MIDI File importer with configurable nine-pad mapping, exact tempo-map conversion, Tap/Hold thresholds, explicit strict-interior Hold ticks, and deterministic chart-v1 output;
+- 317 deterministic M0/M1/M2/M3/M4/M5 native headless checks, including 13 Python importer tests.
 
 Locked core decisions:
 
@@ -52,14 +53,15 @@ Locked core decisions:
 
 ## Next milestone
 
-M5 — chart authoring tool:
+M6 — art/audio integration and Web/mobile QA:
 
-- deterministic Python MIDI-file-to-JSON CLI;
-- configurable nine-pad MIDI mapping and tempo-map conversion;
-- Tap/Hold conversion, explicit valid Hold ticks, and JSON validation.
+- replace placeholders with production assets and cleared audio;
+- integrate final Start effects and mobile layout polish;
+- perform browser/device QA and itch.io release export;
+- add CI headless validation and CI Web export.
 
 Later content blockers remain: final MIDI mapping presets, real-device tuning of the `0.5 beat` authoring threshold, and redistribution rights or replacement for the public gameplay song.
 
 ## Rule
 
-M4 is complete. Do not begin M5 without an explicit request. CI setup and CI Web export validation remain M6 scope.
+M5 is complete. Do not begin M6 without an explicit request. CI setup and CI Web export validation remain M6 scope.

@@ -11,6 +11,7 @@ const M1TestSuite = preload("res://tests/m1_test_suite.gd")
 const M2TestSuite = preload("res://tests/m2_test_suite.gd")
 const M3TestSuite = preload("res://tests/m3_test_suite.gd")
 const M4TestSuite = preload("res://tests/m4_test_suite.gd")
+const M5TestSuite = preload("res://tests/m5_test_suite.gd")
 
 var _failures := 0
 var _checks := 0
@@ -21,7 +22,7 @@ func _init() -> void:
 
 
 func _run() -> void:
-	print("M0/M1/M2/M3/M4 validation started")
+	print("M0/M1/M2/M3/M4/M5 validation started")
 	_check_project_settings()
 	_check_scenes()
 	_check_web_preset()
@@ -29,13 +30,14 @@ func _run() -> void:
 	M2TestSuite.new().run(self)
 	M3TestSuite.new().run(self)
 	M4TestSuite.new().run(self)
+	M5TestSuite.new().run(self)
 
 	if _failures == 0:
-		print("M0/M1/M2/M3/M4 validation passed: %d checks" % _checks)
+		print("M0/M1/M2/M3/M4/M5 validation passed: %d checks" % _checks)
 		quit(0)
 		return
 
-	printerr("M0/M1/M2/M3/M4 validation failed: %d of %d checks failed" % [_failures, _checks])
+	printerr("M0/M1/M2/M3/M4/M5 validation failed: %d of %d checks failed" % [_failures, _checks])
 	quit(1)
 
 

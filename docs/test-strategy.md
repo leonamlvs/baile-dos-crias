@@ -33,6 +33,11 @@ monotonic timing, pause/resume, completion, and clean retry. Chart tests cover
 every validation boundary plus chord ordering, render-stall catch-up, backward
 time rejection, and synchronized clock/chart reset.
 
+M5 uses Python's standard `unittest` module and is invoked by the native
+headless runner. It covers format-0/1 MIDI parsing, running status, variable
+tempo maps, configurable pad mapping, Tap/Hold thresholds, strict interior Hold
+ticks, malformed/pairing errors, runtime validation, and byte-identical output.
+
 ## Headless validation
 
 The MVP uses a small native GDScript test runner that extends `SceneTree` and runs

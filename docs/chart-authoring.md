@@ -76,6 +76,30 @@ It must not block the MVP or be mixed into the deterministic MIDI converter.
 5. Playtest.
 6. Commit source MIDI plus runtime JSON when MIDI source exists.
 
-The importer is a Python CLI. Its MIDI parsing dependency and invocation are
-defined when M5 is implemented. It MUST produce identical JSON for identical
-MIDI, configuration, and metadata inputs.
+The M5 importer is `tools/chart_import/midi_to_json.py`. It uses only the Python
+standard library; no external MIDI package or live-device dependency is needed.
+It supports Standard MIDI File formats 0 and 1 using ticks-per-quarter-note
+timing. SMPTE time division is rejected with an actionable error.
+
+Invoke it with an existing MIDI file, output path, explicit configuration, song
+ID, and difficulty:
+
+```powershell
+python tools/chart_import/midi_to_json.py `
+  content/songs/song-id/source/normal.mid `
+  content/songs/song-id/charts/normal.json `
+  --config tools/chart_import/example-config.json `
+  --song-id song-id `
+  --difficulty normal
+```
+
+Configuration requires exactly nine distinct MIDI pitches mapped bijectively to
+logical pads `1..9`. `hold_threshold_beats` defaults to `0.5`,
+`hold_tick_beats` defaults to `1.0`, and `unmapped_notes` is either `ignore`
+(default) or `error`.
+
+Timestamp conversion uses exact rational arithmetic followed by nearest-integer
+millisecond rounding, with exact halves rounded upward. Generated sustain ticks
+are de-duplicated after rounding and retained only when
+`time_ms < tick_ms < end_ms`. Identical MIDI, configuration, song ID, and
+difficulty inputs produce byte-identical JSON.

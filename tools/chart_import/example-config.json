@@ -1,0 +1,16 @@
+{
+  "note_to_pad": {
+    "36": 1,
+    "37": 2,
+    "38": 3,
+    "39": 4,
+    "40": 5,
+    "41": 6,
+    "42": 7,
+    "43": 8,
+    "44": 9
+  },
+  "hold_threshold_beats": 0.5,
+  "hold_tick_beats": 1.0,
+  "unmapped_notes": "ignore"
+}
