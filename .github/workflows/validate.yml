@@ -52,16 +52,21 @@ jobs:
       - name: Validate release content and charts
         run: godot --headless --path . --script res://scripts/validate_release_content.gd
 
+      - name: Prepare Web export directory
+        if: always()
+        run: mkdir -p build/web
+
       - name: Export Web release
+        id: web-export
         if: always()
         run: godot --headless --path . --export-release Web build/web/index.html
 
       - name: Verify Web launch artifacts
-        if: always()
+        if: always() && steps.web-export.outcome == 'success'
         run: python scripts/verify_web_export.py build/web
 
       - name: Upload Web release
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: baile-dos-crias-web

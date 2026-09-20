@@ -1,6 +1,6 @@
 # Product Specification
 
-Status: **Draft baseline**
+Status: **Authoritative MVP baseline; explicit TBD items remain open**
 
 ## Product
 
@@ -60,7 +60,7 @@ Start actions:
 - Mouse/touch: visual pressed feedback; activate only on release.
 - Keyboard: `Space` or `Enter`.
 
-Confirmed start-screen track:
+Specified start-screen track, pending repository redistribution evidence:
 
 `BASE DE FUNK 150 BPM  INSTRUMENTAL  USO LIVRE 03 Prod DIL34N.mp3`
 

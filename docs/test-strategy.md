@@ -1,6 +1,6 @@
 # Test Strategy
 
-Status: **Draft baseline**
+Status: **Current MVP validation strategy**
 
 ## Priority
 
@@ -42,8 +42,10 @@ M6 adds deterministic coverage for Start beat phase, the 15-second preview
 envelope, landscape-mobile blocking, shared touch-target minimums, selection
 swipes, title overflow motion, responsive guard presence, the Start Data modal,
 invalid/unsupported import rejection, explicit Replace/Cancel behavior,
-countdown input blocking, interrupted countdown restart, CI configuration, and
-release audio inclusion/exclusion rules.
+countdown input blocking, interrupted countdown restart, full touch release
+routing, gameplay combo/MISS/fire presentation, replaceable visual slots, UTF-8
+UI text, preview/audio/chart bounds, CI configuration, licensing inventory
+policy, and release content inclusion/exclusion rules.
 
 ## Headless validation
 

@@ -1,0 +1,10 @@
+{
+  "id": "late-preview",
+  "title": "Late Preview",
+  "artist": "Test Artist",
+  "duration_ms": 1000,
+  "bpm_display": "150",
+  "audio": "metadata.json",
+  "preview_start_ms": 1000,
+  "difficulties": ["easy"]
+}

@@ -1,9 +1,13 @@
 # Baile dos Crias — Specification Index
 
-Status: **Draft baseline**  
+Status: **Current specification index; individual documents identify accepted and TBD decisions**
 Target date: 2026-09-19
 
 This repository documentation is the implementation source of truth for **Baile dos Crias**, a portrait rhythm game for Web/itch.io built with Godot.
+
+Authoritative MVP specs govern implemented behavior unless a section is
+explicitly marked TBD. Specification authority does not mean acceptance
+criteria or M6 release sign-off have passed.
 
 ## Source precedence
 
@@ -13,7 +17,7 @@ When sources disagree, use this order:
 2. Accepted ADRs under `docs/decisions/`.
 3. Wireframes for layout, proportions, and z-order.
 4. Reference artwork for visual direction only.
-5. The original `Baile dos Crias.md` as historical product context.
+5. The original `Baile dos Crias.md` as historical product context when supplied; it is not present in this repository.
 
 Legacy reference art may still show the old name **Baile dos Amigos** or outdated result labels. Do not copy those conflicts into the implementation.
 
@@ -38,11 +42,10 @@ Legacy reference art may still show the old name **Baile dos Amigos** or outdate
 - `docs/current-work.md` — current status, open decisions, next work.
 - `docs/decisions/` — accepted architecture/product decisions.
 
-## Current source assets
+## Tracked source assets
 
-1. Current files under `assets/ref/`.
-2. Image files under `assets/ref/img/`.
-3. Audio files under `assets/ref/audio/`.
+Tracked reference assets currently consist of the image files under
+`assets/ref/img/`:
 
 - `playing-reference.png`
 - `playing-wireframe.png`
@@ -50,8 +53,10 @@ Legacy reference art may still show the old name **Baile dos Amigos** or outdate
 - `score-wireframe.png`
 - `start.png`
 - `start-wireframe.png`
-- `BASE DE FUNK 150 BPM  INSTRUMENTAL  USO LIVRE 03 Prod DIL34N.mp3`
-- `DJ André Marques Hero - O jogo (128 kbps).mp3` — current gameplay reference track, not automatically approved for redistribution.
+
+No audio is currently tracked. Local reference audio may exist under
+`assets/ref/audio/`, but it is not a repository input and must not ship until its
+redistribution evidence is approved in `content/release-content.json`.
 
 ## Local validation
 
@@ -64,9 +69,10 @@ python --version
 godot --headless --path . --editor --quit
 godot --headless --path . --script res://tests/runner.gd
 python -m unittest discover -s tools/chart_import/tests -v
+godot --headless --path . --script res://scripts/validate_release_content.gd
+New-Item -ItemType Directory -Force build/web | Out-Null
 godot --headless --path . --export-release Web build/web/index.html
 python scripts/verify_web_export.py build/web
-godot --headless --path . --script res://scripts/validate_release_content.gd
 ```
 
 These commands verify the pinned tools, import and parse the project, run the

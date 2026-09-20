@@ -116,6 +116,9 @@ func _validate_metadata(metadata: Dictionary, category: String, item_path: Strin
 	if category != CATEGORY_SONG:
 		if String(metadata.get("name", "")).strip_edges().is_empty():
 			return "Metadata requires a non-empty name."
+		var visual_error := _validate_optional_content_path(metadata, "visual", item_path)
+		if not visual_error.is_empty():
+			return visual_error
 		return ""
 
 	for field in ["title", "artist", "bpm_display", "audio"]:
@@ -124,6 +127,12 @@ func _validate_metadata(metadata: Dictionary, category: String, item_path: Strin
 	var duration_value: Variant = metadata.get("duration_ms", null)
 	if not _is_integer_number(duration_value) or int(duration_value) <= 0:
 		return "Song metadata requires a positive integer duration_ms."
+	var preview_start_value: Variant = metadata.get("preview_start_ms", 0)
+	if not _is_integer_number(preview_start_value) or int(preview_start_value) < 0:
+		return "Song preview_start_ms must be a non-negative integer."
+	if int(preview_start_value) >= int(duration_value):
+		return "Song preview_start_ms must be before duration_ms."
+	metadata["preview_start_ms"] = int(preview_start_value)
 	if not metadata.get("difficulties", null) is Array or metadata.difficulties.is_empty():
 		return "Song metadata requires a non-empty difficulties array."
 	for difficulty in metadata.difficulties:
@@ -134,6 +143,24 @@ func _validate_metadata(metadata: Dictionary, category: String, item_path: Strin
 		return "Song audio path must be relative and must not leave its content directory."
 	if not FileAccess.file_exists(item_path.path_join(audio_path)):
 		return "Song audio path does not exist: %s" % audio_path
+	if load(item_path.path_join(audio_path)) as AudioStream == null:
+		return "Song audio path is not a loadable AudioStream: %s" % audio_path
+	return ""
+
+
+func _validate_optional_content_path(metadata: Dictionary, field: String, item_path: String) -> String:
+	if not metadata.has(field):
+		return ""
+	var path_value: Variant = metadata[field]
+	if not path_value is String or String(path_value).strip_edges().is_empty():
+		return "Optional %s must be a non-empty relative path when provided." % field
+	var relative_path := String(path_value)
+	if relative_path.is_absolute_path() or relative_path.contains(".."):
+		return "Optional %s must not leave its content directory." % field
+	if not FileAccess.file_exists(item_path.path_join(relative_path)):
+		return "Optional %s does not exist: %s" % [field, relative_path]
+	if load(item_path.path_join(relative_path)) as Texture2D == null:
+		return "Optional %s is not a loadable texture: %s" % [field, relative_path]
 	return ""
 
 

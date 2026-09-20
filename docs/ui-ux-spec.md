@@ -1,6 +1,6 @@
 # UI/UX Specification
 
-Status: **Draft baseline**
+Status: **Authoritative MVP baseline; explicit TBD items remain open**
 
 ## Layout model
 

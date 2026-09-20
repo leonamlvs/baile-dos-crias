@@ -1,6 +1,6 @@
 # Acceptance Criteria
 
-Status: **Draft baseline**
+Status: **Authoritative MVP acceptance baseline; release sign-off remains open**
 
 ## Project
 

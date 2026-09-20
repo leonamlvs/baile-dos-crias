@@ -1,6 +1,6 @@
 # Content Structure
 
-Status: **Draft baseline**
+Status: **Authoritative MVP baseline; explicit TBD items remain open**
 
 ## Goals
 
@@ -50,9 +50,13 @@ Minimum conceptual fields:
 
 `bpm_display` is UI metadata only; runtime charts do not depend on it.
 
-`preview_start_ms` is optional and defaults to `0`. Song Select loops 15 seconds
-from that timestamp with 250 ms fades. Optional future fields may include
-attribution, license, cover art, and tempo description.
+`preview_start_ms` is optional and defaults to `0`. It must be a non-negative
+integer before both the declared song duration and decoded audio end. Song
+Select loops 15 seconds from that timestamp with 250 ms fades.
+
+Runtime audio must load as an `AudioStream` with a finite positive duration.
+Every chart note must start before both the declared and decoded audio endpoint;
+a Hold may end exactly at that endpoint but not after it.
 
 ## Characters
 
@@ -65,8 +69,9 @@ content/characters/
 
 Character choice is cosmetic in the MVP.
 
-Character metadata requires a stable `id` and non-empty `name`. Presentation
-asset paths are optional metadata in M1.
+Character metadata requires a stable `id` and non-empty `name`. An optional
+`visual` path is relative to the character directory and replaces the geometric
+fallback in the shared presentation slot.
 
 ## DJ tables
 
@@ -79,12 +84,13 @@ content/tables/
 
 Table choice is cosmetic in the MVP.
 
-Table metadata requires a stable `id` and non-empty `name`. Presentation asset
-paths are optional metadata in M1.
+Table metadata requires a stable `id` and non-empty `name`. An optional `visual`
+path is relative to the table directory and replaces the geometric fallback in
+the shared presentation slot.
 
 ## Current source material
 
-Confirmed Start track:
+Locally referenced Start track:
 
 `BASE DE FUNK 150 BPM  INSTRUMENTAL  USO LIVRE 03 Prod DIL34N.mp3`
 
@@ -92,7 +98,14 @@ Current gameplay reference:
 
 `DJ André Marques Hero - O jogo (128 kbps).mp3`
 
-The gameplay reference is not automatically approved for public redistribution. Distribution rights must be confirmed before shipping.
+Neither a descriptive filename nor local availability proves redistribution
+rights. `content/release-content.json` is the release inventory for Start audio,
+song audio, charts, and shipped visuals. Every shipped entry must have a path,
+kind, attribution, license, evidence, a package-content marker, `cleared: true`, and
+`include_in_release: true`. The project-code license decision is recorded
+separately in the same inventory. The current undecided/pending values are
+intentional release blockers and must only be changed from owner-supplied
+evidence.
 
 ## IDs
 

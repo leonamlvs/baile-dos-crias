@@ -4,6 +4,7 @@ extends Control
 const CatalogSelectionScript = preload("res://scripts/ui/catalog_selection.gd")
 const ContentCatalogScript = preload("res://scripts/data/content_catalog.gd")
 const UiHelpersScript = preload("res://scripts/ui/ui_helpers.gd")
+const PresentationSlotScript = preload("res://scripts/ui/presentation_slot.gd")
 
 var character_selection = CatalogSelectionScript.new()
 var table_selection = CatalogSelectionScript.new()
@@ -13,6 +14,8 @@ var _character_label: Label
 var _table_label: Label
 var _focus_label: Label
 var _next_button: Button
+var _character_slot: PresentationSlot
+var _table_slot: PresentationSlot
 var _swipe_starts := {}
 
 func _ready() -> void:
@@ -89,9 +92,16 @@ func _build() -> void:
 	_next_button.pressed.connect(_continue)
 	add_child(_next_button)
 
-	var preview := UiHelpersScript.panel(Color("1d3b59"))
+	var preview := UiHelpersScript.panel(Color("12283d"))
+	preview.name = "PresentationPreview"
 	UiHelpersScript.anchor(preview, 0.12, 0.18, 0.88, 0.48)
 	add_child(preview)
+	_table_slot = PresentationSlotScript.new("TableSlot", Color("31516f"))
+	UiHelpersScript.anchor(_table_slot, 0.08, 0.48, 0.92, 0.92)
+	preview.add_child(_table_slot)
+	_character_slot = PresentationSlotScript.new("CharacterSlot", Color("4b6680"))
+	UiHelpersScript.anchor(_character_slot, 0.28, 0.08, 0.72, 0.72)
+	preview.add_child(_character_slot)
 	_focus_label = UiHelpersScript.label("", 18)
 	UiHelpersScript.anchor(_focus_label, 0.20, 0.20, 0.80, 0.25)
 	add_child(_focus_label)
@@ -127,6 +137,16 @@ func _refresh() -> void:
 		return
 	_character_label.text = "PERSONAGEM: %s" % _display_name(character_selection.current(), "Nenhum disponível")
 	_table_label.text = "MESA: %s" % _display_name(table_selection.current(), "Nenhuma disponível")
+	_character_slot.configure(
+		character_selection.current(),
+		"visual",
+		_display_name(character_selection.current(), "PERSONAGEM"),
+	)
+	_table_slot.configure(
+		table_selection.current(),
+		"visual",
+		_display_name(table_selection.current(), "MESA DJ"),
+	)
 	_focus_label.text = "FOCO: %s — use ↑ ↓ e ← →" % ["PERSONAGEM" if focused_track == 0 else "MESA"]
 	_next_button.disabled = not can_continue()
 

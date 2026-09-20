@@ -6,7 +6,9 @@ signal session_completed(result: Dictionary)
 
 const GameplaySessionScript = preload("res://scripts/gameplay/gameplay_session.gd")
 const ContentCatalogScript = preload("res://scripts/data/content_catalog.gd")
+const ContentValidatorScript = preload("res://scripts/data/content_validator.gd")
 const RuntimeChartParserScript = preload("res://scripts/data/runtime_chart_parser.gd")
+const PresentationSlotScript = preload("res://scripts/ui/presentation_slot.gd")
 const UiHelpersScript = preload("res://scripts/ui/ui_helpers.gd")
 
 var session = GameplaySessionScript.new()
@@ -23,6 +25,11 @@ var _pending_chart := {}
 var _pending_stream: AudioStream
 var _finalized_result := false
 var _score_label: Label
+var _combo_label: Label
+var _miss_label: Label
+var _fire_slot: Control
+var _character_slot: PresentationSlot
+var _table_slot: PresentationSlot
 var _countdown_label: Label
 var _pause_overlay: Control
 var _error_label: Label
@@ -58,6 +65,7 @@ func begin_session(chart: Dictionary, time_source: Callable = Callable()) -> voi
 	_clear_input_without_forwarding()
 	session.start(_chart)
 	pad_grid.configure_notes(_chart, session.note_controller)
+	_refresh_hud()
 	set_process(_time_source.is_valid())
 
 
@@ -70,6 +78,7 @@ func retry_session() -> void:
 	_finalized_result = false
 	session.retry()
 	pad_grid.configure_notes(_chart, session.note_controller)
+	_refresh_hud()
 	set_process(_time_source.is_valid())
 
 
@@ -122,6 +131,7 @@ func finish_song(time_ms: int) -> Dictionary:
 
 
 func _process(_delta: float) -> void:
+	_animate_fire()
 	if _countdown_active:
 		_update_countdown()
 		return
@@ -171,12 +181,7 @@ func _clear_input_without_forwarding() -> void:
 
 func _notify_events(events: Array[Dictionary]) -> void:
 	if not events.is_empty():
-		if is_instance_valid(_score_label):
-			_score_label.text = "SCORE %d\nCOMBO %d ×%d" % [
-				session.score_tracker.score,
-				session.score_tracker.combo,
-				session.score_tracker.multiplier,
-			]
+		_refresh_hud()
 		judgments_applied.emit(events)
 
 
@@ -213,11 +218,19 @@ func _begin_selected_song() -> void:
 	if not parsed.ok:
 		_show_error(parsed.error)
 		return
-	var stream := load(String(song.content_path).path_join(String(song.audio))) as AudioStream
-	if stream == null:
-		_show_error("Não foi possível carregar o áudio selecionado.")
+	var loaded_audio: Dictionary = ContentValidatorScript.validate_song_audio(song)
+	if not loaded_audio.ok:
+		_show_error(loaded_audio.error)
 		return
-	_begin_countdown(parsed.chart, stream, "start")
+	var duration_validation: Dictionary = ContentValidatorScript.validate_chart_duration(
+		parsed.chart,
+		song,
+		int(loaded_audio.audio_duration_ms),
+	)
+	if not duration_validation.ok:
+		_show_error(duration_validation.error)
+		return
+	_begin_countdown(parsed.chart, loaded_audio.stream, "start")
 
 
 func pause_session() -> void:
@@ -351,18 +364,34 @@ func _show_error(message: String) -> void:
 
 func _build_product_ui() -> void:
 	var stage := UiHelpersScript.panel(Color("1d3b59", 0.75))
+	stage.name = "PresentationStage"
 	UiHelpersScript.anchor(stage, 0.12, 0.16, 0.88, 0.50)
 	add_child(stage)
-	var stage_label := UiHelpersScript.label(
-		"%s + %s" % [
-			GameState.selected_character_id if not GameState.selected_character_id.is_empty() else "PERSONAGEM",
-			GameState.selected_table_id if not GameState.selected_table_id.is_empty() else "MESA DJ",
-		],
-		24,
-	)
-	UiHelpersScript.anchor(stage_label, 0.10, 0.32, 0.90, 0.62)
-	stage.add_child(stage_label)
-	_score_label = UiHelpersScript.label("SCORE 0\nCOMBO 0 ×1", 20, HORIZONTAL_ALIGNMENT_LEFT)
+	_table_slot = PresentationSlotScript.new("TableSlot", Color("31516f"))
+	UiHelpersScript.anchor(_table_slot, 0.08, 0.48, 0.92, 0.92)
+	stage.add_child(_table_slot)
+	_character_slot = PresentationSlotScript.new("CharacterSlot", Color("4b6680"))
+	UiHelpersScript.anchor(_character_slot, 0.28, 0.08, 0.72, 0.72)
+	stage.add_child(_character_slot)
+	_configure_presentation_slots()
+	_fire_slot = PresentationSlotScript.new("ComboFireSlot", Color("f97316", 0.62))
+	_fire_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	UiHelpersScript.anchor(_fire_slot, 0.34, 0.31, 0.66, 0.47)
+	_fire_slot.visible = false
+	add_child(_fire_slot)
+	_combo_label = UiHelpersScript.label("", 28)
+	_combo_label.name = "ComboLabel"
+	UiHelpersScript.anchor(_combo_label, 0.28, 0.34, 0.72, 0.43)
+	_combo_label.visible = false
+	add_child(_combo_label)
+	_miss_label = UiHelpersScript.label("", 28)
+	_miss_label.name = "MissStreakLabel"
+	_miss_label.modulate = Color("fb7185")
+	UiHelpersScript.anchor(_miss_label, 0.28, 0.43, 0.72, 0.50)
+	_miss_label.visible = false
+	add_child(_miss_label)
+	_score_label = UiHelpersScript.label("SCORE 0", 20, HORIZONTAL_ALIGNMENT_LEFT)
+	_score_label.name = "ScoreLabel"
 	UiHelpersScript.anchor(_score_label, 0.04, 0.03, 0.42, 0.12)
 	add_child(_score_label)
 	var pause_button := UiHelpersScript.button("PAUSE", 18)
@@ -408,3 +437,43 @@ func _build_product_ui() -> void:
 	exit_button.pressed.connect(exit_to_song_select)
 	_pause_overlay.add_child(exit_button)
 	_pause_overlay.visible = false
+	_refresh_hud()
+
+
+func _configure_presentation_slots() -> void:
+	var catalog = ContentCatalogScript.new()
+	catalog.load_from_root()
+	var character: Dictionary = catalog.get_item(ContentCatalogScript.CATEGORY_CHARACTER, GameState.selected_character_id)
+	var table: Dictionary = catalog.get_item(ContentCatalogScript.CATEGORY_TABLE, GameState.selected_table_id)
+	var character_item: Dictionary = character.item if character.ok else {}
+	var table_item: Dictionary = table.item if table.ok else {}
+	_character_slot.configure(
+		character_item,
+		"visual",
+		GameState.selected_character_id if not GameState.selected_character_id.is_empty() else "PERSONAGEM",
+	)
+	_table_slot.configure(
+		table_item,
+		"visual",
+		GameState.selected_table_id if not GameState.selected_table_id.is_empty() else "MESA DJ",
+	)
+
+
+func _refresh_hud() -> void:
+	if not is_instance_valid(_score_label):
+		return
+	var tracker = session.score_tracker
+	_score_label.text = "SCORE %d" % tracker.score
+	_combo_label.visible = tracker.combo > 0
+	_combo_label.text = "COMBO %d  ×%d" % [tracker.combo, tracker.multiplier] if tracker.combo > 0 else ""
+	_miss_label.visible = tracker.miss_streak > 0
+	_miss_label.text = "MISS %d" % tracker.miss_streak if tracker.miss_streak > 0 else ""
+	_fire_slot.visible = tracker.combo > 0 and tracker.multiplier == 8
+
+
+func _animate_fire() -> void:
+	if not is_instance_valid(_fire_slot) or not _fire_slot.visible:
+		return
+	_fire_slot.pivot_offset = _fire_slot.size * 0.5
+	var pulse := 1.0 + 0.08 * sin(float(Time.get_ticks_msec()) / 90.0)
+	_fire_slot.scale = Vector2(pulse, pulse)

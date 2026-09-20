@@ -1,6 +1,7 @@
 extends RefCounted
 
 const ContentCatalogScript = preload("res://scripts/data/content_catalog.gd")
+const ContentValidatorScript = preload("res://scripts/data/content_validator.gd")
 const InputRouterScript = preload("res://scripts/input/input_router.gd")
 const MemorySaveStoreScript = preload("res://scripts/save/memory_save_store.gd")
 const SaveManagerScript = preload("res://scripts/save/save_manager.gd")
@@ -9,6 +10,7 @@ const SaveManagerScript = preload("res://scripts/save/save_manager.gd")
 func run(runner: Object) -> void:
 	_test_autoloads(runner)
 	_test_content_catalog(runner)
+	_test_playable_content_validation(runner)
 	_test_save_manager(runner)
 	_test_input_router(runner)
 
@@ -36,12 +38,48 @@ func _test_content_catalog(runner: Object) -> void:
 		runner.expect_equal(catalog.songs[1].id, "zulu-song", "catalog retains later valid song")
 	runner.expect_equal(catalog.characters.size(), 1, "catalog loads valid character metadata")
 	runner.expect_equal(catalog.tables.size(), 1, "catalog excludes invalid table metadata")
-	runner.expect(catalog.diagnostics.size() >= 4, "catalog returns actionable diagnostics per invalid item")
+	runner.expect(catalog.diagnostics.size() >= 6, "catalog returns actionable diagnostics per invalid item")
 	runner.expect(catalog.get_item("songs", "alpha-song").ok, "catalog resolves valid item")
 	var invalid_lookup: Dictionary = catalog.get_item("songs", "broken-song")
 	runner.expect(not invalid_lookup.ok and invalid_lookup.error.contains("invalid and excluded"), "catalog explains invalid item lookup")
 	var missing_lookup: Dictionary = catalog.get_item("songs", "missing-song")
 	runner.expect(not missing_lookup.ok and missing_lookup.error.contains("not found"), "catalog explains missing item lookup")
+	var messages: Array[String] = []
+	for diagnostic in catalog.diagnostics:
+		messages.append(String(diagnostic.message))
+	runner.expect(messages.any(func(message: String) -> bool: return message.contains("preview_start_ms")), "catalog rejects invalid preview_start_ms")
+	runner.expect(messages.any(func(message: String) -> bool: return message.contains("loadable AudioStream")), "catalog rejects an existing non-audio file")
+
+
+func _test_playable_content_validation(runner: Object) -> void:
+	var song := {
+		"id": "fixture-song",
+		"content_path": "res://tests/fixtures/content/songs/alpha-song",
+		"audio": "audio.tres",
+		"duration_ms": 10,
+		"preview_start_ms": 0,
+	}
+	var loaded: Dictionary = ContentValidatorScript.validate_song_audio(song)
+	runner.expect(loaded.ok and int(loaded.audio_duration_ms) == 10, "playable-content validation loads finite positive audio")
+	var valid_chart := {"notes": [
+		{"id": "tap", "time_ms": 9, "pad": 1, "type": "tap"},
+		{"id": "hold", "time_ms": 5, "end_ms": 10, "ticks_ms": [], "pad": 2, "type": "hold"},
+	]}
+	runner.expect(ContentValidatorScript.validate_chart_duration(valid_chart, song, 10).ok, "chart may end exactly at the song endpoint")
+	var late_note := {"notes": [{"id": "late", "time_ms": 10, "pad": 1, "type": "tap"}]}
+	runner.expect(not ContentValidatorScript.validate_chart_duration(late_note, song, 10).ok, "chart rejects a note at the song endpoint")
+	var late_hold := {"notes": [{"id": "late-hold", "time_ms": 5, "end_ms": 11, "ticks_ms": [], "pad": 1, "type": "hold"}]}
+	runner.expect(not ContentValidatorScript.validate_chart_duration(late_hold, song, 10).ok, "chart rejects a Hold beyond the song endpoint")
+	var short_metadata := song.duplicate(true)
+	short_metadata.duration_ms = 8
+	var metadata_late_note := {"notes": [{"id": "metadata-late", "time_ms": 8, "pad": 1, "type": "tap"}]}
+	runner.expect(not ContentValidatorScript.validate_chart_duration(metadata_late_note, short_metadata, 10).ok, "chart also respects the declared metadata duration")
+	var preview_after_audio := song.duplicate(true)
+	preview_after_audio.preview_start_ms = 10
+	runner.expect(not ContentValidatorScript.validate_song_audio(preview_after_audio).ok, "preview must begin before decoded audio ends")
+	var zero_audio := song.duplicate(true)
+	zero_audio.audio = "zero-audio.tres"
+	runner.expect(not ContentValidatorScript.validate_song_audio(zero_audio).ok, "playable-content validation rejects zero-length audio")
 
 
 func _test_save_manager(runner: Object) -> void:
@@ -130,8 +168,10 @@ func _test_input_router(runner: Object) -> void:
 	runner.expect(router.begin_touch(2, 9), "second touch begins on pad 9")
 	runner.expect_equal(router.get_touch_pad(1), 5, "touch remains bound to initial pad")
 	runner.expect(not router.begin_touch(1, 6), "touch cannot transfer to another pad")
+	runner.expect(router.end_touch(1), "touch lift releases its bound source")
+	runner.expect_equal(router.get_touch_pad(1), 0, "lifted touch no longer owns a pad")
 	runner.expect(router.begin_mouse(MOUSE_BUTTON_LEFT, 1), "mouse may chord with touches")
-	runner.expect(router.is_pad_held(5) and router.is_pad_held(9) and router.is_pad_held(1), "router supports chords")
+	runner.expect(not router.is_pad_held(5) and router.is_pad_held(9) and router.is_pad_held(1), "router supports chords while released touches stay inactive")
 	router.clear_all_sources()
 	runner.expect(not router.is_pad_held(5) and not router.is_pad_held(9) and not router.is_pad_held(1), "focus clear releases every active source")
 	runner.expect(released.has(5) and released.has(9) and released.has(1), "focus clear emits logical releases")

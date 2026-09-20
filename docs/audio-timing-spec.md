@@ -1,6 +1,6 @@
 # Audio and Timing Specification
 
-Status: **Draft baseline**
+Status: **Authoritative MVP baseline; explicit TBD items remain open**
 
 ## Core invariant
 
@@ -45,7 +45,7 @@ On resume, gameplay remains frozen until countdown completes.
 
 ## Start-screen music
 
-Confirmed track:
+Specified track, pending repository redistribution evidence:
 
 `BASE DE FUNK 150 BPM  INSTRUMENTAL  USO LIVRE 03 Prod DIL34N.mp3`
 

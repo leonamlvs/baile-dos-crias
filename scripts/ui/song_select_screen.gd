@@ -3,6 +3,7 @@ extends Control
 
 const CatalogSelectionScript = preload("res://scripts/ui/catalog_selection.gd")
 const ContentCatalogScript = preload("res://scripts/data/content_catalog.gd")
+const ContentValidatorScript = preload("res://scripts/data/content_validator.gd")
 const UiHelpersScript = preload("res://scripts/ui/ui_helpers.gd")
 
 var selection = CatalogSelectionScript.SongSelection.new()
@@ -181,10 +182,9 @@ func _play_selected_preview() -> void:
 	var song: Dictionary = selection.songs.current()
 	if song.is_empty():
 		return
-	var path := String(song.content_path).path_join(String(song.audio))
-	var stream := load(path) as AudioStream
-	if stream != null:
-		AudioManager.start_preview(stream, int(song.get("preview_start_ms", 0)), 15000, 250)
+	var loaded: Dictionary = ContentValidatorScript.validate_song_audio(song)
+	if loaded.ok:
+		AudioManager.start_preview(loaded.stream, int(song.preview_start_ms), 15000, 250)
 
 
 func _continue() -> void:

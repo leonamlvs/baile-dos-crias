@@ -1,0 +1,1 @@
+# Keep local Web exports outside Godot's resource import scan.

@@ -56,9 +56,12 @@ No fixed FPS assumption may affect score/timing.
 CI installs the official Godot `4.7.2.stable` editor and matching export
 templates, then runs headless project loading, the native GDScript suite, the
 Python chart-import suite, strict release-content/chart validation, and the Web
-release export/artifact verifier. A failing release gate remains a failing job;
-the export steps still run so their diagnostics and artifact can be inspected.
+release export/artifact verifier. A failing release gate remains a failing job.
+The diagnostic export still runs, but artifact verification requires a
+successful export and artifact upload requires every prior gate to pass.
 
 ## Licensing
 
-Only content with confirmed redistribution rights may ship publicly.
+Only content with confirmed redistribution rights may ship publicly. The
+machine-readable release inventory is `content/release-content.json`; an
+undecided project license or incomplete content evidence blocks release.

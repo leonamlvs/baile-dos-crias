@@ -1,6 +1,6 @@
 # Contributing
 
-Status: **Draft baseline**
+Status: **Current contribution policy**
 
 Baile dos Crias is intended to accept reviewed GitHub pull requests for code, songs, charts, and characters.
 
@@ -31,7 +31,12 @@ A song contribution should keep its files inside one song folder and include:
 - source MIDI when available;
 - license/attribution information required for redistribution.
 
-Do not submit audio without the right to redistribute it.
+Do not submit audio without the right to redistribute it. Add every release file
+to `content/release-content.json`; release validation rejects missing,
+incomplete, uncleared, or non-included inventory entries.
+
+The repository's project-code license and third-party/content licenses are
+separate decisions. Do not infer either one from the other or from a filename.
 
 ## Charts
 

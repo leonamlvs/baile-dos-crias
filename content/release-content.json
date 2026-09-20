@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "project_license": {
+    "status": "undecided",
+    "license": "",
+    "evidence": "Owner decision required before public release."
+  },
+  "entries": [
+    {
+      "path": "assets/ref/audio/BASE DE FUNK 150 BPM  INSTRUMENTAL  USO LIVRE 03 Prod DIL34N.mp3",
+      "kind": "start_audio",
+      "attribution": "Prod DIL34N",
+      "license": "",
+      "evidence": "Redistribution evidence has not been recorded in the repository.",
+      "package_marker": "BASE DE FUNK 150 BPM",
+      "cleared": false,
+      "include_in_release": true
+    }
+  ]
+}

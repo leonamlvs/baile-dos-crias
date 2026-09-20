@@ -4,6 +4,6 @@
   "artist": "Test Artist",
   "duration_ms": 60000,
   "bpm_display": "150",
-  "audio": "audio.fixture",
+  "audio": "audio.tres",
   "difficulties": ["easy", "normal"]
 }

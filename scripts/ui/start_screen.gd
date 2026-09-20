@@ -2,15 +2,16 @@ class_name StartScreen
 extends Control
 
 const UiHelpersScript = preload("res://scripts/ui/ui_helpers.gd")
+const PresentationSlotScript = preload("res://scripts/ui/presentation_slot.gd")
 const WebBackupAdapterScript = preload("res://scripts/save/web_backup_adapter.gd")
 
 const START_MUSIC_PATH := "res://assets/ref/audio/BASE DE FUNK 150 BPM  INSTRUMENTAL  USO LIVRE 03 Prod DIL34N.mp3"
 const START_BPM := 150.0
 
 var _start_button: Button
-var _left_speaker: ColorRect
-var _right_speaker: ColorRect
-var _wave: ColorRect
+var _left_speaker: Control
+var _right_speaker: Control
+var _wave: Control
 var _started := false
 var _data_modal: Control
 var _data_status: Label
@@ -21,6 +22,11 @@ var _backup_adapter = WebBackupAdapterScript.new()
 
 @export var beat_offset_ms := 0
 @export var enable_start_music := true
+@export_file var background_visual := ""
+@export_file var logo_visual := ""
+@export_file var left_speaker_visual := ""
+@export_file var right_speaker_visual := ""
+@export_file var soundwave_visual := ""
 
 
 func _ready() -> void:
@@ -60,21 +66,26 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _build() -> void:
-	var background := UiHelpersScript.panel(Color("10182b"))
+	var background := PresentationSlotScript.new("BackgroundSlot", Color("10182b"))
+	background.configure_path(background_visual, "")
 	UiHelpersScript.anchor(background, 0.0, 0.0, 1.0, 1.0)
 	add_child(background)
 
-	var title := UiHelpersScript.label("BAILE DOS CRIAS", 54)
-	UiHelpersScript.anchor(title, 0.08, 0.08, 0.92, 0.22)
-	add_child(title)
+	var logo := PresentationSlotScript.new("LogoSlot", Color("182845"))
+	logo.configure_path(logo_visual, "BAILE DOS CRIAS")
+	UiHelpersScript.anchor(logo, 0.08, 0.08, 0.92, 0.22)
+	add_child(logo)
 
-	_left_speaker = UiHelpersScript.panel(Color("395b86"))
+	_left_speaker = PresentationSlotScript.new("LeftSpeakerSlot", Color("395b86"))
+	_left_speaker.configure_path(left_speaker_visual, "")
 	UiHelpersScript.anchor(_left_speaker, 0.10, 0.34, 0.36, 0.55)
 	add_child(_left_speaker)
-	_right_speaker = UiHelpersScript.panel(Color("395b86"))
+	_right_speaker = PresentationSlotScript.new("RightSpeakerSlot", Color("395b86"))
+	_right_speaker.configure_path(right_speaker_visual, "")
 	UiHelpersScript.anchor(_right_speaker, 0.64, 0.34, 0.90, 0.55)
 	add_child(_right_speaker)
-	_wave = UiHelpersScript.panel(Color("7dd3fc", 0.6))
+	_wave = PresentationSlotScript.new("SoundwaveSlot", Color("7dd3fc", 0.6))
+	_wave.configure_path(soundwave_visual, "")
 	UiHelpersScript.anchor(_wave, 0.36, 0.34, 0.64, 0.55)
 	add_child(_wave)
 
@@ -139,27 +150,27 @@ func _on_import_text_received(text: String) -> void:
 		_show_data_error("Backup rejeitado: %s" % prepared.error)
 		return
 	_pending_import_token = String(prepared.token)
-	_data_status.text = "Backup vÃ¡lido. Substituir os dados locais?"
+	_data_status.text = "Backup válido. Substituir os dados locais?"
 	_data_menu.visible = false
 	_confirmation_row.visible = true
 
 
 func _confirm_import() -> void:
 	if _pending_import_token.is_empty():
-		_show_data_error("Nenhum backup validado aguarda confirmaÃ§Ã£o.")
+		_show_data_error("Nenhum backup validado aguarda confirmação.")
 		return
 	var result: Dictionary = SaveManager.confirm_import(_pending_import_token)
 	if not result.ok:
-		_show_data_error("NÃ£o foi possÃ­vel substituir os dados: %s" % result.error)
+		_show_data_error("Não foi possível substituir os dados: %s" % result.error)
 		return
 	_pending_import_token = ""
 	AudioManager.set_master_volume(SaveManager.get_master_volume())
-	_set_data_primary_state("Dados substituÃ­dos e salvos.")
+	_set_data_primary_state("Dados substituídos e salvos.")
 
 
 func _cancel_import() -> void:
 	_cancel_pending_import()
-	_set_data_primary_state("ImportaÃ§Ã£o cancelada; os dados atuais foram mantidos.")
+	_set_data_primary_state("Importação cancelada; os dados atuais foram mantidos.")
 
 
 func _cancel_pending_import() -> void:

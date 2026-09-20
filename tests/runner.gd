@@ -121,6 +121,7 @@ func _check_web_preset() -> void:
 	_expect(preset_text.contains("build/*") and preset_text.contains("tests/*"), "Web preset excludes local builds and tests")
 	_expect(preset_text.contains("tools/*") and preset_text.contains("docs/*"), "Web preset excludes development-only files")
 	_expect(preset_text.contains("assets/ref/img/*") and preset_text.contains("assets/ref/audio/DJ*"), "Web preset excludes reference art and unlicensed gameplay audio")
+	_expect(preset_text.contains("content/songs/*/source/*"), "Web preset excludes authoring-only song sources")
 
 
 func _expect(condition: bool, label: String) -> void:
