@@ -1,0 +1,11 @@
+{
+  "id": "dev-test-song",
+  "title": "Pulso de Teste",
+  "artist": "Baile dos Crias Dev",
+  "bpm_display": "120",
+  "audio": "audio.wav",
+  "duration_ms": 24000,
+  "preview_start_ms": 0,
+  "difficulties": ["easy", "normal"],
+  "development_only": true
+}

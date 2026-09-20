@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "song_id": "dev-test-song",
+  "difficulty": "normal",
+  "notes": [
+    {"id": "n01", "time_ms": 1000, "pad": 1, "type": "tap"},
+    {"id": "n02", "time_ms": 2000, "pad": 2, "type": "tap"},
+    {"id": "n03", "time_ms": 3000, "pad": 3, "type": "tap"},
+    {"id": "n04", "time_ms": 4000, "pad": 4, "type": "tap"},
+    {"id": "n05", "time_ms": 4000, "pad": 6, "type": "tap"},
+    {"id": "n06", "time_ms": 5000, "pad": 5, "type": "tap"},
+    {"id": "n07", "time_ms": 6000, "pad": 5, "type": "hold", "end_ms": 9000, "ticks_ms": [6500, 7000, 7500, 8000, 8500]},
+    {"id": "n08", "time_ms": 6500, "pad": 7, "type": "tap"},
+    {"id": "n09", "time_ms": 7000, "pad": 1, "type": "tap"},
+    {"id": "n10", "time_ms": 8000, "pad": 9, "type": "tap"},
+    {"id": "n11", "time_ms": 9000, "pad": 2, "type": "tap"},
+    {"id": "n12", "time_ms": 10000, "pad": 4, "type": "tap"},
+    {"id": "n13", "time_ms": 11000, "pad": 6, "type": "tap"},
+    {"id": "n14", "time_ms": 12000, "pad": 8, "type": "tap"},
+    {"id": "n15", "time_ms": 13000, "pad": 1, "type": "tap"},
+    {"id": "n16", "time_ms": 14000, "pad": 3, "type": "hold", "end_ms": 17000, "ticks_ms": [14500, 15000, 15500, 16000, 16500]},
+    {"id": "n17", "time_ms": 15000, "pad": 9, "type": "tap"},
+    {"id": "n18", "time_ms": 16000, "pad": 5, "type": "tap"},
+    {"id": "n19", "time_ms": 17000, "pad": 7, "type": "tap"},
+    {"id": "n20", "time_ms": 18000, "pad": 2, "type": "tap"},
+    {"id": "n21", "time_ms": 19000, "pad": 1, "type": "tap"},
+    {"id": "n22", "time_ms": 19000, "pad": 9, "type": "tap"},
+    {"id": "n23", "time_ms": 20000, "pad": 4, "type": "tap"},
+    {"id": "n24", "time_ms": 21000, "pad": 6, "type": "tap"},
+    {"id": "n25", "time_ms": 22000, "pad": 5, "type": "tap"}
+  ]
+}

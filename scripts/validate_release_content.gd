@@ -23,15 +23,18 @@ func _run() -> void:
 	catalog.load_from_root("res://content")
 	for diagnostic in catalog.diagnostics:
 		_errors.append("%s: %s" % [diagnostic.path, diagnostic.message])
-	if catalog.characters.is_empty():
+	var release_characters: Array = catalog.characters.filter(_is_release_content)
+	var release_tables: Array = catalog.tables.filter(_is_release_content)
+	var release_songs: Array = catalog.songs.filter(_is_release_content)
+	if release_characters.is_empty():
 		_errors.append("MVP release requires at least one valid character.")
-	if catalog.tables.is_empty():
+	if release_tables.is_empty():
 		_errors.append("MVP release requires at least one valid DJ table.")
-	if catalog.songs.is_empty():
+	if release_songs.is_empty():
 		_errors.append("MVP release requires at least one cleared playable song.")
 	_require_cleared_entry(START_AUDIO_PATH, "start_audio", inventory_entries)
 
-	for song in catalog.songs:
+	for song in release_songs:
 		var audio_validation: Dictionary = ContentValidatorScript.validate_song_audio(song)
 		if not audio_validation.ok:
 			_errors.append("%s: %s" % [song.content_path, audio_validation.error])
@@ -61,14 +64,14 @@ func _run() -> void:
 						_errors.append("%s: %s" % [chart_path, duration_validation.error])
 			_require_cleared_entry(chart_path, "chart", inventory_entries)
 
-	for character in catalog.characters:
+	for character in release_characters:
 		_require_optional_visual(character, "visual", "character_visual", inventory_entries)
-	for table in catalog.tables:
+	for table in release_tables:
 		_require_optional_visual(table, "visual", "table_visual", inventory_entries)
 
 	if _errors.is_empty():
 		print("Release content validation passed: %d song(s), %d character(s), %d table(s)." % [
-			catalog.songs.size(), catalog.characters.size(), catalog.tables.size(),
+			release_songs.size(), release_characters.size(), release_tables.size(),
 		])
 		quit(0)
 		return
@@ -124,6 +127,8 @@ func _validate_inventoried_release_files(entries: Dictionary) -> void:
 
 
 func _scan_release_files(directory_path: String, entries: Dictionary) -> void:
+	if _is_development_content_directory(directory_path):
+		return
 	var directory := DirAccess.open(directory_path)
 	if directory == null:
 		return
@@ -145,3 +150,19 @@ func _scan_release_files(directory_path: String, entries: Dictionary) -> void:
 		if directory_path.begins_with("res://content/songs/") and child_directory == "source":
 			continue
 		_scan_release_files(directory_path.path_join(child_directory), entries)
+
+
+func _is_release_content(item: Dictionary) -> bool:
+	return not bool(item.get("development_only", false))
+
+
+func _is_development_content_directory(directory_path: String) -> bool:
+	if not directory_path.begins_with("res://content/"):
+		return false
+	var metadata_path := directory_path.path_join("metadata.json")
+	if not FileAccess.file_exists(metadata_path):
+		return false
+	var json := JSON.new()
+	return json.parse(FileAccess.get_file_as_string(metadata_path)) == OK \
+		and json.data is Dictionary \
+		and bool(json.data.get("development_only", false))

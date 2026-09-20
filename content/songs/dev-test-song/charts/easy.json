@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "song_id": "dev-test-song",
+  "difficulty": "easy",
+  "notes": [
+    {"id": "e01", "time_ms": 2000, "pad": 1, "type": "tap"},
+    {"id": "e02", "time_ms": 4000, "pad": 2, "type": "tap"},
+    {"id": "e03", "time_ms": 6000, "pad": 4, "type": "tap"},
+    {"id": "e04", "time_ms": 6000, "pad": 6, "type": "tap"},
+    {"id": "e05", "time_ms": 8000, "pad": 5, "type": "tap"},
+    {"id": "e06", "time_ms": 10000, "pad": 3, "type": "hold", "end_ms": 12000, "ticks_ms": [10500, 11000, 11500]},
+    {"id": "e07", "time_ms": 14000, "pad": 7, "type": "tap"},
+    {"id": "e08", "time_ms": 16000, "pad": 8, "type": "tap"},
+    {"id": "e09", "time_ms": 18000, "pad": 1, "type": "tap"},
+    {"id": "e10", "time_ms": 18000, "pad": 9, "type": "tap"},
+    {"id": "e11", "time_ms": 20000, "pad": 5, "type": "tap"},
+    {"id": "e12", "time_ms": 22000, "pad": 2, "type": "tap"}
+  ]
+}
